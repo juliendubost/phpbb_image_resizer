@@ -1,6 +1,6 @@
 import os
+import sys
 import re
-import logging
 import glob
 import argparse
 import magic
@@ -8,7 +8,6 @@ from PIL import Image
 from resizeimage import resizeimage
 
 
-LOG = logging.getLogger(__name__)
 CONTAIN_WIDTH = 1024
 CONTAIN_HEIGHT = 768
 
@@ -33,6 +32,7 @@ def fetch_image_files(rootpath, filter_extension=True):
 def resize_and_replace(filepath):
 
     fd_img = open(filepath, "r+b")
+    sys.stdout.write(f"{filepath}\r")
     try:
         img = Image.open(fd_img)
     except Image.UnidentifiedImageError:
@@ -44,7 +44,8 @@ def resize_and_replace(filepath):
         if not img.format:
             img.format = magic.from_file(filepath, mime=True).split("/")[-1].upper()
         img.save(filepath, format=img.format)
-        LOG.info(f"{filepath} resized")
+        sys.stdout.write(f"{filepath} -> resized\n")
+        sys.stdout.flush()
         fd_img.close()
 
 
