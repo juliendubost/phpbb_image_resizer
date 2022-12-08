@@ -35,7 +35,7 @@ def resize_and_replace(filepath):
     sys.stdout.write(f"{filepath}\r")
     try:
         img = Image.open(fd_img)
-    except Image.UnidentifiedImageError:
+    except (Image.UnidentifiedImageError, PermissionError):
         return
 
     width, height = img.size
